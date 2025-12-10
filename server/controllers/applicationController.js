@@ -70,7 +70,7 @@ const getAllApplications = asyncHandler(async (req, res) => {
     Application.find(query)
       .populate('applicant', 'firstName lastName email phone')
       .populate('job', 'title company location')
-      .populate('resume', 'fileName filePath')
+      .populate('resume', 'fileName fileUrl originalName')
       .sort('-createdAt')
       .skip(skip)
       .limit(parseInt(limit)),
@@ -94,7 +94,7 @@ const getApplication = asyncHandler(async (req, res) => {
   const application = await Application.findById(req.params.id)
     .populate('applicant', 'firstName lastName email phone')
     .populate('job', 'title company location type salary description')
-    .populate('resume', 'fileName filePath');
+    .populate('resume', 'fileName fileUrl originalName');
 
   if (!application) {
     throw new AppError('Application not found', 404);

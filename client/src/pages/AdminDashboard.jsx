@@ -199,11 +199,17 @@ const AdminDashboard = () => {
     return colors[status] || '#6b7280';
   };
 
-  const getResumeUrl = (resumePath) => {
-    if (!resumePath) return null;
+  const getResumeUrl = (resume) => {
+    if (!resume) return null;
+    // If it's a direct URL (Cloudinary), use it
+    if (resume.fileUrl) return resume.fileUrl;
+    // If it's an object with fileUrl
+    if (typeof resume === 'object' && resume.fileUrl) return resume.fileUrl;
+    // If it's a string URL
+    if (typeof resume === 'string' && resume.startsWith('http')) return resume;
+    // Fallback for local files
     const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5001';
-    if (resumePath.startsWith('http')) return resumePath;
-    return `${apiUrl}/${resumePath}`;
+    return `${apiUrl}/uploads/${resume}`;
   };
 
   const Icon = ({ type }) => {
@@ -854,7 +860,7 @@ const AdminDashboard = () => {
                       <Button 
                         variant="success"
                         size="sm"
-                        href={getResumeUrl(selectedApplication.resume?.path || selectedApplication.applicant?.resume?.path)}
+                        href={getResumeUrl(selectedApplication.resume?.fileUrl || selectedApplication.applicant?.resume?.fileUrl)}
                         target="_blank"
                         style={{ display: 'flex', alignItems: 'center', gap: '6px', borderRadius: '8px' }}
                       >
