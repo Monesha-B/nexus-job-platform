@@ -31,6 +31,10 @@ const AdminDashboard = () => {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [deletingJob, setDeletingJob] = useState(null);
 
+  // New state for applicant detail modal
+  const [showApplicantModal, setShowApplicantModal] = useState(false);
+  const [selectedApplication, setSelectedApplication] = useState(null);
+
   useEffect(() => {
     if (!isAdmin) { navigate('/dashboard'); return; }
     fetchDashboardData();
@@ -178,6 +182,11 @@ const AdminDashboard = () => {
     }
   };
 
+  const handleViewApplicant = (app) => {
+    setSelectedApplication(app);
+    setShowApplicantModal(true);
+  };
+
   const formatDate = (date) => {
     return new Date(date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
   };
@@ -190,6 +199,13 @@ const AdminDashboard = () => {
     return colors[status] || '#6b7280';
   };
 
+  const getResumeUrl = (resumePath) => {
+    if (!resumePath) return null;
+    const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5001';
+    if (resumePath.startsWith('http')) return resumePath;
+    return `${apiUrl}/${resumePath}`;
+  };
+
   const Icon = ({ type }) => {
     const icons = {
       users: <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>,
@@ -200,6 +216,11 @@ const AdminDashboard = () => {
       edit: <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>,
       trash: <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>,
       arrow: <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>,
+      eye: <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>,
+      download: <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>,
+      mail: <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>,
+      phone: <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>,
+      user: <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>,
     };
     return icons[type] || null;
   };
@@ -288,7 +309,7 @@ const AdminDashboard = () => {
                       applications.slice(0, 5).map((app, i) => (
                         <div 
                           key={app._id}
-                          onClick={() => setActiveTab('applications')}
+                          onClick={() => handleViewApplicant(app)}
                           style={{ 
                             padding: '14px 20px', 
                             borderBottom: i < 4 ? '1px solid #f3f4f6' : 'none',
@@ -496,19 +517,29 @@ const AdminDashboard = () => {
                               </Badge>
                             </td>
                             <td style={{ padding: '12px 20px', verticalAlign: 'middle' }}>
-                              <Form.Select 
-                                size="sm" 
-                                value={app.status}
-                                onChange={(e) => handleUpdateApplicationStatus(app._id, e.target.value)}
-                                style={{ borderRadius: '6px', width: 'auto' }}
-                              >
-                                <option value="pending">Pending</option>
-                                <option value="reviewed">Reviewed</option>
-                                <option value="shortlisted">Shortlisted</option>
-                                <option value="interview">Interview</option>
-                                <option value="offered">Offered</option>
-                                <option value="rejected">Rejected</option>
-                              </Form.Select>
+                              <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+                                <Button 
+                                  variant="outline-primary" 
+                                  size="sm" 
+                                  onClick={() => handleViewApplicant(app)}
+                                  style={{ borderRadius: '6px', display: 'flex', alignItems: 'center', gap: '4px' }}
+                                >
+                                  <Icon type="eye" /> View
+                                </Button>
+                                <Form.Select 
+                                  size="sm" 
+                                  value={app.status}
+                                  onChange={(e) => handleUpdateApplicationStatus(app._id, e.target.value)}
+                                  style={{ borderRadius: '6px', width: 'auto' }}
+                                >
+                                  <option value="pending">Pending</option>
+                                  <option value="reviewed">Reviewed</option>
+                                  <option value="shortlisted">Shortlisted</option>
+                                  <option value="interview">Interview</option>
+                                  <option value="offered">Offered</option>
+                                  <option value="rejected">Rejected</option>
+                                </Form.Select>
+                              </div>
                             </td>
                           </tr>
                         ))}
@@ -687,6 +718,224 @@ const AdminDashboard = () => {
           <Modal.Footer>
             <Button variant="light" onClick={() => setShowDeleteModal(false)} style={{ borderRadius: '8px' }}>Cancel</Button>
             <Button variant="danger" onClick={handleDeleteJob} style={{ borderRadius: '8px' }}>Delete Job</Button>
+          </Modal.Footer>
+        </Modal>
+
+        {/* Applicant Detail Modal */}
+        <Modal show={showApplicantModal} onHide={() => setShowApplicantModal(false)} size="lg">
+          <Modal.Header closeButton style={{ background: '#fef7f5', borderBottom: '1px solid #fed7c5' }}>
+            <Modal.Title style={{ fontWeight: '600', color: '#d97757' }}>
+              📋 Application Details
+            </Modal.Title>
+          </Modal.Header>
+          <Modal.Body style={{ padding: '0' }}>
+            {selectedApplication && (
+              <>
+                {/* Applicant Profile Section */}
+                <div style={{ padding: '24px', borderBottom: '1px solid #e5e7eb' }}>
+                  <h6 style={{ color: '#6b7280', fontSize: '0.8rem', textTransform: 'uppercase', marginBottom: '16px', fontWeight: '600' }}>
+                    👤 Applicant Profile
+                  </h6>
+                  <div style={{ display: 'flex', alignItems: 'flex-start', gap: '20px' }}>
+                    <div style={{ 
+                      width: '80px', 
+                      height: '80px', 
+                      borderRadius: '50%', 
+                      background: 'linear-gradient(135deg, #d97757, #e09a7d)', 
+                      color: '#fff', 
+                      display: 'flex', 
+                      alignItems: 'center', 
+                      justifyContent: 'center', 
+                      fontWeight: '700', 
+                      fontSize: '1.5rem',
+                      flexShrink: 0
+                    }}>
+                      {selectedApplication.applicant?.firstName?.charAt(0)}{selectedApplication.applicant?.lastName?.charAt(0)}
+                    </div>
+                    <div style={{ flex: 1 }}>
+                      <h4 style={{ margin: '0 0 8px 0', fontWeight: '700', color: '#111827' }}>
+                        {selectedApplication.applicant?.firstName} {selectedApplication.applicant?.lastName}
+                      </h4>
+                      <div style={{ display: 'flex', flexWrap: 'wrap', gap: '16px', color: '#6b7280', fontSize: '0.9rem' }}>
+                        <span style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                          <Icon type="mail" /> {selectedApplication.applicant?.email}
+                        </span>
+                        {selectedApplication.applicant?.phone && (
+                          <span style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                            <Icon type="phone" /> {selectedApplication.applicant?.phone}
+                          </span>
+                        )}
+                      </div>
+                      {selectedApplication.applicant?.bio && (
+                        <p style={{ marginTop: '12px', color: '#374151', fontSize: '0.9rem', lineHeight: '1.6' }}>
+                          {selectedApplication.applicant?.bio}
+                        </p>
+                      )}
+                      {selectedApplication.applicant?.skills?.length > 0 && (
+                        <div style={{ marginTop: '12px' }}>
+                          <span style={{ fontWeight: '500', fontSize: '0.85rem', color: '#6b7280' }}>Skills: </span>
+                          {selectedApplication.applicant?.skills?.map((skill, i) => (
+                            <Badge key={i} bg="" style={{ background: '#e0e7ff', color: '#4338ca', marginRight: '6px', marginBottom: '4px', fontWeight: '500' }}>
+                              {skill}
+                            </Badge>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                </div>
+
+                {/* Job Applied For */}
+                <div style={{ padding: '24px', borderBottom: '1px solid #e5e7eb', background: '#f9fafb' }}>
+                  <h6 style={{ color: '#6b7280', fontSize: '0.8rem', textTransform: 'uppercase', marginBottom: '16px', fontWeight: '600' }}>
+                    💼 Job Applied For
+                  </h6>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <div>
+                      <h5 style={{ margin: '0 0 4px 0', fontWeight: '600', color: '#111827' }}>
+                        {selectedApplication.job?.title}
+                      </h5>
+                      <p style={{ margin: 0, color: '#6b7280', fontSize: '0.9rem' }}>
+                        {selectedApplication.job?.company} • {selectedApplication.job?.location}
+                      </p>
+                    </div>
+                    <div style={{ textAlign: 'right' }}>
+                      <Badge style={{ 
+                        background: `${getStatusColor(selectedApplication.status)}20`, 
+                        color: getStatusColor(selectedApplication.status), 
+                        fontWeight: '600', 
+                        padding: '8px 16px', 
+                        borderRadius: '8px', 
+                        textTransform: 'capitalize',
+                        fontSize: '0.9rem'
+                      }}>
+                        {selectedApplication.status}
+                      </Badge>
+                      <p style={{ margin: '8px 0 0 0', color: '#6b7280', fontSize: '0.8rem' }}>
+                        Applied {formatDate(selectedApplication.createdAt)}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Resume Section */}
+                <div style={{ padding: '24px', borderBottom: '1px solid #e5e7eb' }}>
+                  <h6 style={{ color: '#6b7280', fontSize: '0.8rem', textTransform: 'uppercase', marginBottom: '16px', fontWeight: '600' }}>
+                    📄 Resume
+                  </h6>
+                  {selectedApplication.resume || selectedApplication.applicant?.resume ? (
+                    <div style={{ 
+                      display: 'flex', 
+                      alignItems: 'center', 
+                      gap: '12px', 
+                      padding: '16px', 
+                      background: '#f0fdf4', 
+                      borderRadius: '10px',
+                      border: '1px solid #bbf7d0'
+                    }}>
+                      <div style={{ 
+                        width: '48px', 
+                        height: '48px', 
+                        borderRadius: '10px', 
+                        background: '#dcfce7', 
+                        display: 'flex', 
+                        alignItems: 'center', 
+                        justifyContent: 'center',
+                        color: '#16a34a'
+                      }}>
+                        <Icon type="file" />
+                      </div>
+                      <div style={{ flex: 1 }}>
+                        <p style={{ margin: 0, fontWeight: '600', color: '#111827' }}>Resume Attached</p>
+                        <p style={{ margin: 0, fontSize: '0.85rem', color: '#6b7280' }}>
+                          {selectedApplication.resume?.originalName || selectedApplication.applicant?.resume?.originalName || 'resume.pdf'}
+                        </p>
+                      </div>
+                      <Button 
+                        variant="success"
+                        size="sm"
+                        href={getResumeUrl(selectedApplication.resume?.path || selectedApplication.applicant?.resume?.path)}
+                        target="_blank"
+                        style={{ display: 'flex', alignItems: 'center', gap: '6px', borderRadius: '8px' }}
+                      >
+                        <Icon type="download" /> Download
+                      </Button>
+                    </div>
+                  ) : (
+                    <div style={{ 
+                      padding: '20px', 
+                      background: '#fef2f2', 
+                      borderRadius: '10px', 
+                      textAlign: 'center',
+                      color: '#dc2626',
+                      border: '1px solid #fecaca'
+                    }}>
+                      No resume attached
+                    </div>
+                  )}
+                </div>
+
+                {/* Cover Letter Section */}
+                <div style={{ padding: '24px' }}>
+                  <h6 style={{ color: '#6b7280', fontSize: '0.8rem', textTransform: 'uppercase', marginBottom: '16px', fontWeight: '600' }}>
+                    ✉️ Cover Letter
+                  </h6>
+                  {selectedApplication.coverLetter ? (
+                    <div style={{ 
+                      padding: '20px', 
+                      background: '#fffbeb', 
+                      borderRadius: '10px',
+                      border: '1px solid #fde68a',
+                      maxHeight: '300px',
+                      overflowY: 'auto'
+                    }}>
+                      <p style={{ 
+                        margin: 0, 
+                        color: '#374151', 
+                        fontSize: '0.95rem', 
+                        lineHeight: '1.8',
+                        whiteSpace: 'pre-wrap'
+                      }}>
+                        {selectedApplication.coverLetter}
+                      </p>
+                    </div>
+                  ) : (
+                    <div style={{ 
+                      padding: '20px', 
+                      background: '#f3f4f6', 
+                      borderRadius: '10px', 
+                      textAlign: 'center',
+                      color: '#6b7280'
+                    }}>
+                      No cover letter provided
+                    </div>
+                  )}
+                </div>
+              </>
+            )}
+          </Modal.Body>
+          <Modal.Footer style={{ background: '#f9fafb', borderTop: '1px solid #e5e7eb' }}>
+            <div style={{ display: 'flex', gap: '12px', width: '100%', justifyContent: 'space-between', alignItems: 'center' }}>
+              <Form.Select 
+                size="sm" 
+                value={selectedApplication?.status || 'pending'}
+                onChange={(e) => {
+                  handleUpdateApplicationStatus(selectedApplication._id, e.target.value);
+                  setSelectedApplication({ ...selectedApplication, status: e.target.value });
+                }}
+                style={{ borderRadius: '8px', width: 'auto' }}
+              >
+                <option value="pending">Pending</option>
+                <option value="reviewed">Reviewed</option>
+                <option value="shortlisted">Shortlisted</option>
+                <option value="interview">Interview</option>
+                <option value="offered">Offered</option>
+                <option value="rejected">Rejected</option>
+              </Form.Select>
+              <Button variant="light" onClick={() => setShowApplicantModal(false)} style={{ borderRadius: '8px' }}>
+                Close
+              </Button>
+            </div>
           </Modal.Footer>
         </Modal>
       </Container>
