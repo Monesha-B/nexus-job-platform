@@ -199,17 +199,17 @@ const AdminDashboard = () => {
     return colors[status] || '#6b7280';
   };
 
-  const getResumeUrl = (resume) => {
-    if (!resume) return null;
-    // If it's a direct URL (Cloudinary), use it
-    if (resume.fileUrl) return resume.fileUrl;
-    // If it's an object with fileUrl
-    if (typeof resume === 'object' && resume.fileUrl) return resume.fileUrl;
-    // If it's a string URL
-    if (typeof resume === 'string' && resume.startsWith('http')) return resume;
-    // Fallback for local files
+  const getResumeUrl = (resumeUrl) => {
+    if (!resumeUrl) return null;
     const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5001';
-    return `${apiUrl}/uploads/${resume}`;
+    // If it already starts with http, return as-is
+    if (resumeUrl.startsWith('http')) return resumeUrl;
+    // If it starts with /uploads, prepend API URL
+    if (resumeUrl.startsWith('/uploads')) return `${apiUrl}${resumeUrl}`;
+    // If it starts with /, prepend API URL
+    if (resumeUrl.startsWith('/')) return `${apiUrl}${resumeUrl}`;
+    // Otherwise add /uploads/
+    return `${apiUrl}/uploads/${resumeUrl}`;
   };
 
   const Icon = ({ type }) => {
