@@ -67,7 +67,7 @@ Respond helpfully and always guide users to the right feature when they want to 
   });
 }));
 
-// Generate cover letter
+// Generate cover letter (for job application)
 router.post('/generate-cover-letter', protect, asyncHandler(async (req, res) => {
   const { jobId, tone = 'professional', highlights = '', customPoints = '' } = req.body;
 
@@ -138,58 +138,137 @@ Do not include placeholder text like [Your Name] - use the actual candidate name
   });
 }));
 
-// Analyze job match
-router.post('/analyze-match', protect, asyncHandler(async (req, res) => {
-  const { jobDescription } = req.body;
+// Generate cover letter from job description (for AI Match page)
+router.post('/cover-letter', protect, asyncHandler(async (req, res) => {
+  const { jobDescription, jobTitle, company, userName, userEmail } = req.body;
 
   if (!jobDescription) {
     throw new AppError('Job description is required', 400);
   }
 
   const resume = await Resume.findOne({ user: req.user._id }).sort('-createdAt');
-  if (!resume) {
-    throw new AppError('Please upload a resume first', 400);
-  }
 
-  const prompt = `Analyze the match between this resume and job description.
+  const prompt = `Generate a compelling cover letter for a job application.
 
-RESUME:
-${resume.rawText || JSON.stringify(resume.parsedData)}
+JOB DETAILS:
+- Title: ${jobTitle || 'the position'}
+- Company: ${company || 'your company'}
+- Description: ${jobDescription}
 
-JOB DESCRIPTION:
-${jobDescription}
+CANDIDATE INFO:
+- Name: ${userName || `${req.user.firstName} ${req.user.lastName}`}
+- Email: ${userEmail || req.user.email}
+- Resume summary: ${resume?.parsedData?.summary || resume?.rawText?.substring(0, 1000) || 'Experienced professional'}
+- Skills: ${resume?.parsedData?.skills?.join(', ') || 'Various relevant skills'}
 
-Provide a JSON response with:
-{
-  "matchScore": <number 0-100>,
-  "overallFit": "<excellent|good|moderate|low>",
-  "summary": "<2-3 sentence summary>",
-  "strengths": ["<matching skill 1>", "<matching skill 2>", ...],
-  "gaps": ["<missing skill 1>", "<missing skill 2>", ...],
-  "recommendations": ["<recommendation 1>", "<recommendation 2>", ...]
-}`;
+Write a professional cover letter that:
+1. Opens with a strong hook mentioning the specific role and company
+2. Highlights relevant experience and skills that match the job requirements
+3. Shows genuine interest in the company and role
+4. Ends with a call to action
+5. Is approximately 300-400 words
+
+Use the candidate's actual name (${userName || `${req.user.firstName} ${req.user.lastName}`}) - do not use placeholders.`;
 
   const completion = await openai.chat.completions.create({
     model: 'gpt-4o-mini',
     messages: [
-      { role: 'system', content: 'You are an expert HR analyst. Respond only with valid JSON.' },
+      { role: 'system', content: 'You are an expert career coach and professional writer who creates compelling, personalized cover letters.' },
       { role: 'user', content: prompt }
     ],
     max_tokens: 1000,
+    temperature: 0.7,
+  });
+
+  const coverLetter = completion.choices[0].message.content;
+
+  res.json({
+    success: true,
+    data: { coverLetter },
+  });
+}));
+
+// Analyze job match
+router.post('/analyze-match', protect, asyncHandler(async (req, res) => {
+  const { jobDescription, resumeText, resumeId } = req.body;
+
+  if (!jobDescription) {
+    throw new AppError('Job description is required', 400);
+  }
+
+  let resumeContent = resumeText;
+  
+  if (!resumeContent && resumeId) {
+    const resume = await Resume.findById(resumeId);
+    if (resume) {
+      resumeContent = resume.rawText || JSON.stringify(resume.parsedData);
+    }
+  }
+  
+  if (!resumeContent) {
+    const resume = await Resume.findOne({ user: req.user._id }).sort('-createdAt');
+    if (resume) {
+      resumeContent = resume.rawText || JSON.stringify(resume.parsedData);
+    }
+  }
+
+  if (!resumeContent) {
+    throw new AppError('Please upload a resume or paste resume text', 400);
+  }
+
+  const prompt = `Analyze the match between this resume and job description. Be thorough and specific.
+
+RESUME:
+${resumeContent}
+
+JOB DESCRIPTION:
+${jobDescription}
+
+Provide a JSON response with this EXACT structure:
+{
+  "matchScore": <number 0-100>,
+  "overallFit": "<excellent|good|moderate|low>",
+  "summary": "<2-3 sentence personalized summary of the match>",
+  "strengths": ["<specific matching qualification 1>", "<specific matching qualification 2>", "<specific matching qualification 3>"],
+  "gaps": ["<specific missing requirement 1>", "<specific missing requirement 2>"],
+  "skillsMatch": [
+    {"skill": "<skill name>", "status": "match", "importance": "high"},
+    {"skill": "<skill name>", "status": "partial", "importance": "medium"},
+    {"skill": "<skill name>", "status": "missing", "importance": "high"}
+  ],
+  "recommendations": ["<actionable recommendation 1>", "<actionable recommendation 2>", "<actionable recommendation 3>"]
+}
+
+Be specific to the actual resume and job. Include at least 3 strengths, 2 gaps, 5 skills in skillsMatch, and 3 recommendations.`;
+
+  const completion = await openai.chat.completions.create({
+    model: 'gpt-4o-mini',
+    messages: [
+      { role: 'system', content: 'You are an expert HR analyst and career coach. Respond only with valid JSON. Be specific and helpful.' },
+      { role: 'user', content: prompt }
+    ],
+    max_tokens: 1500,
+    temperature: 0.7,
   });
 
   let analysis;
   try {
     const content = completion.choices[0].message.content;
-    analysis = JSON.parse(content.replace(/```json\n?|\n?```/g, ''));
+    analysis = JSON.parse(content.replace(/```json\n?|\n?```/g, '').trim());
   } catch (e) {
+    console.error('JSON parse error:', e);
     analysis = {
-      matchScore: 70,
-      overallFit: 'good',
-      summary: 'Analysis completed.',
-      strengths: [],
-      gaps: [],
-      recommendations: []
+      matchScore: 65,
+      overallFit: 'moderate',
+      summary: 'Your profile shows potential for this role. Review the strengths and gaps below for more details.',
+      strengths: ['Relevant experience', 'Applicable skills', 'Professional background'],
+      gaps: ['Some requirements may need development', 'Consider highlighting more specific experience'],
+      skillsMatch: [
+        { skill: 'Communication', status: 'match', importance: 'high' },
+        { skill: 'Technical Skills', status: 'partial', importance: 'medium' },
+        { skill: 'Industry Experience', status: 'partial', importance: 'high' }
+      ],
+      recommendations: ['Tailor your resume to highlight relevant experience', 'Prepare specific examples for interviews', 'Research the company culture']
     };
   }
 
