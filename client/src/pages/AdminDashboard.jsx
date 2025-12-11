@@ -587,7 +587,7 @@ const AdminDashboard = () => {
                           </td>
                           <td style={{ padding: '12px 20px', verticalAlign: 'middle', color: '#6b7280' }}>{u.email}</td>
                           <td style={{ padding: '12px 20px', verticalAlign: 'middle' }}>
-                            <Badge bg={u.role === 'admin' ? 'danger' : 'primary'} style={{ textTransform: 'capitalize' }}>{u.role}</Badge>
+                            <Badge bg="" style={{ background: u.role === 'admin' ? '#dc2626' : '#d97757', color: '#fff' }} style={{ textTransform: 'capitalize' }}>{u.role}</Badge>
                           </td>
                           <td style={{ padding: '12px 20px', verticalAlign: 'middle', color: '#6b7280' }}>{formatDate(u.createdAt)}</td>
                           <td style={{ padding: '12px 20px', verticalAlign: 'middle' }}>
@@ -781,7 +781,7 @@ const AdminDashboard = () => {
                         <div style={{ marginTop: '12px' }}>
                           <span style={{ fontWeight: '500', fontSize: '0.85rem', color: '#6b7280' }}>Skills: </span>
                           {selectedApplication.applicant?.skills?.map((skill, i) => (
-                            <Badge key={i} bg="" style={{ background: '#e0e7ff', color: '#4338ca', marginRight: '6px', marginBottom: '4px', fontWeight: '500' }}>
+                            <Badge key={i} bg="" style={{ background: '#fef7f5', color: '#d97757', marginRight: '6px', marginBottom: '4px', fontWeight: '500' }}>
                               {skill}
                             </Badge>
                           ))}
