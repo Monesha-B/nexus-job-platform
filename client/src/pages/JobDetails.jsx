@@ -309,7 +309,7 @@ const JobDetails = () => {
               <div style={{ display: 'flex', gap: '12px', marginBottom: '16px' }}>
                 <Button
                   type="button"
-                  variant={coverLetterSource === 'none' ? 'primary' : 'outline-secondary'}
+                  style={{ background: coverLetterSource === 'none' ? '#d97757' : 'transparent', color: coverLetterSource === 'none' ? '#fff' : '#6b7280', border: coverLetterSource === 'none' ? 'none' : '1px solid #d1d5db' }}
                   onClick={() => { setCoverLetterSource('none'); setCoverLetter(''); }}
                   style={{ 
                     borderRadius: '10px', 
@@ -322,7 +322,7 @@ const JobDetails = () => {
                 </Button>
                 <Button
                   type="button"
-                  variant={coverLetterSource === 'generate' ? 'primary' : 'outline-secondary'}
+                  style={{ background: coverLetterSource === 'generate' ? '#d97757' : 'transparent', color: coverLetterSource === 'generate' ? '#fff' : '#6b7280', border: coverLetterSource === 'generate' ? 'none' : '1px solid #d1d5db' }}
                   onClick={() => setCoverLetterSource('generate')}
                   style={{ 
                     borderRadius: '10px', 
@@ -338,7 +338,7 @@ const JobDetails = () => {
                 </Button>
                 <Button
                   type="button"
-                  variant={coverLetterSource === 'manual' ? 'primary' : 'outline-secondary'}
+                  style={{ background: coverLetterSource === 'manual' ? '#d97757' : 'transparent', color: coverLetterSource === 'manual' ? '#fff' : '#6b7280', border: coverLetterSource === 'manual' ? 'none' : '1px solid #d1d5db' }}
                   onClick={() => setCoverLetterSource('manual')}
                   style={{ 
                     borderRadius: '10px', 

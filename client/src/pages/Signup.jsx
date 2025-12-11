@@ -105,7 +105,7 @@ const Signup = () => {
           {/* Logo */}
           <div className="text-center mb-4">
             <Link to="/" className="text-decoration-none">
-              <h1 className="text-primary fw-bold">NEXUS</h1>
+              <h1 className="text-coral fw-bold">NEXUS</h1>
             </Link>
           </div>
           
@@ -240,7 +240,7 @@ const Signup = () => {
 
             <Button 
               type="submit" 
-              variant="primary" 
+              style={{ background: "#d97757", border: "none" }} 
               className="w-100 py-2"
               disabled={loading}
             >
@@ -250,7 +250,7 @@ const Signup = () => {
 
           <p className="text-center mt-4 mb-0">
             Already have an account?{' '}
-            <Link to="/login" className="text-primary fw-semibold">
+            <Link to="/login" className="text-coral fw-semibold">
               Login
             </Link>
           </p>

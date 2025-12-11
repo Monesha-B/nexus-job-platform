@@ -334,7 +334,7 @@ const JobSearch = () => {
                 {Array.from({ length: pagination.pages }, (_, i) => i + 1).map((page) => (
                   <Button
                     key={page}
-                    variant={page === pagination.current ? 'primary' : 'outline-secondary'}
+                    style={{ background: page === pagination.current ? '#d97757' : 'transparent', color: page === pagination.current ? '#fff' : '#6b7280', border: page === pagination.current ? 'none' : '1px solid #d1d5db' }}
                     onClick={() => fetchJobs(page)}
                     style={{
                       borderRadius: '8px',
