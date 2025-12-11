@@ -61,7 +61,7 @@ const JobMatch = () => {
       const payload = { jobDescription, jobTitle: jobTitle || undefined, company: company || undefined };
       if (useTextInput) payload.resumeText = resumeText;
       else if (selectedResume) payload.resumeId = selectedResume;
-      const response = await api.post('/ai/match', payload);
+      const response = await api.post('/ai/analyze-match', payload);
       setMatchResult(response.data.data);
       setStep(2);
       fetchMatchHistory(); // Refresh history after new match

@@ -3,7 +3,7 @@ import api from './api';
 export const aiService = {
   // Match resume with job description
   matchJob: async (data) => {
-    const response = await api.post('/ai/match', data);
+    const response = await api.post('/ai/analyze-match', data);
     return response.data;
   },
 
