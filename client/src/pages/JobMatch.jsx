@@ -62,7 +62,7 @@ const JobMatch = () => {
       if (useTextInput) payload.resumeText = resumeText;
       else if (selectedResume) payload.resumeId = selectedResume;
       const response = await api.post('/ai/analyze-match', payload);
-      setMatchResult(response.data.data);
+      setMatchResult(response.data.data.analysis);
       setStep(2);
       fetchMatchHistory(); // Refresh history after new match
     } catch (err) { setError(err.response?.data?.message || 'Failed to analyze. Please try again.'); }
