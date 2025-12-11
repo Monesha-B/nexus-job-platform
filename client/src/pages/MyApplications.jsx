@@ -44,9 +44,9 @@ const MyApplications = () => {
   const getStatusColor = (status) => {
     const colors = {
       pending: '#f59e0b',
-      reviewed: '#3b82f6',
+      reviewed: '#d97757',
       shortlisted: '#8b5cf6',
-      interview: '#6366f1',
+      interview: '#d97757',
       offered: '#10b981',
       rejected: '#ef4444',
       withdrawn: '#6b7280',

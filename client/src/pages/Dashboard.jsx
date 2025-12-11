@@ -43,9 +43,9 @@ const Dashboard = () => {
   const getStatusColor = (status) => {
     const colors = {
       pending: '#f59e0b',
-      reviewed: '#3b82f6',
+      reviewed: '#d97757',
       shortlisted: '#8b5cf6',
-      interview: '#6366f1',
+      interview: '#d97757',
       offered: '#10b981',
       rejected: '#ef4444',
     };
@@ -91,7 +91,7 @@ const Dashboard = () => {
         <Row className="mb-4">
           {[
             { label: 'My Applications', value: stats.applications, icon: 'file', color: '#d97757', link: '/applications' },
-            { label: 'Browse Jobs', value: 'Explore', icon: 'briefcase', color: '#6366f1', link: '/jobs' },
+            { label: 'Browse Jobs', value: 'Explore', icon: 'briefcase', color: '#d97757', link: '/jobs' },
             { label: 'AI Job Match', value: 'Try Now', icon: 'zap', color: '#10b981', link: '/match' },
             { label: 'My Profile', value: 'View', icon: 'search', color: '#f59e0b', link: '/profile' },
           ].map((stat, i) => (
@@ -281,7 +281,7 @@ const Dashboard = () => {
             <Row>
               {[
                 { title: 'AI Job Match', desc: 'Find jobs matching your skills', icon: '🎯', link: '/match', color: '#d97757' },
-                { title: 'Browse Jobs', desc: 'Explore available positions', icon: '🔍', link: '/jobs', color: '#6366f1' },
+                { title: 'Browse Jobs', desc: 'Explore available positions', icon: '🔍', link: '/jobs', color: '#d97757' },
                 { title: 'Update Profile', desc: 'Keep your info up to date', icon: '👤', link: '/profile', color: '#10b981' },
                 { title: 'My Applications', desc: 'Track your applications', icon: '📄', link: '/applications', color: '#f59e0b' },
               ].map((action, i) => (

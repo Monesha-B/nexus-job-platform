@@ -193,8 +193,8 @@ const AdminDashboard = () => {
 
   const getStatusColor = (status) => {
     const colors = {
-      pending: '#f59e0b', reviewed: '#3b82f6', shortlisted: '#8b5cf6',
-      interview: '#6366f1', offered: '#10b981', rejected: '#ef4444', withdrawn: '#6b7280',
+      pending: '#f59e0b', reviewed: '#d97757', shortlisted: '#8b5cf6',
+      interview: '#d97757', offered: '#10b981', rejected: '#ef4444', withdrawn: '#6b7280',
     };
     return colors[status] || '#6b7280';
   };
@@ -257,7 +257,7 @@ const AdminDashboard = () => {
               {[
                 { label: 'Total Users', value: stats?.users?.total || 0, icon: 'users', color: '#d97757', tab: 'users' },
                 { label: 'Job Seekers', value: stats?.users?.jobseekers || 0, icon: 'users', color: '#10b981', tab: 'users' },
-                { label: 'Total Jobs', value: stats?.jobs?.total || 0, icon: 'briefcase', color: '#6366f1', tab: 'jobs' },
+                { label: 'Total Jobs', value: stats?.jobs?.total || 0, icon: 'briefcase', color: '#d97757', tab: 'jobs' },
                 { label: 'Applications', value: stats?.applications?.total || 0, icon: 'file', color: '#f59e0b', tab: 'applications' },
               ].map((stat, i) => (
                 <Col md={3} sm={6} key={i} className="mb-3">
@@ -451,14 +451,14 @@ const AdminDashboard = () => {
                               <Badge bg="" style={{ background: '#fef7f5', color: '#d97757', textTransform: 'capitalize' }}>{job.type}</Badge>
                             </td>
                             <td style={{ padding: '12px 20px', verticalAlign: 'middle' }}>
-                              <Badge bg="primary">{job.applicationsCount || 0}</Badge>
+                              <Badge bg="" style={{ background: '#d97757' }}>{job.applicationsCount || 0}</Badge>
                             </td>
                             <td style={{ padding: '12px 20px', verticalAlign: 'middle' }}>
                               <Badge bg={job.isActive ? 'success' : 'secondary'}>{job.isActive ? 'Active' : 'Inactive'}</Badge>
                             </td>
                             <td style={{ padding: '12px 20px', verticalAlign: 'middle' }} onClick={(e) => e.stopPropagation()}>
                               <div style={{ display: 'flex', gap: '8px' }}>
-                                <Button variant="outline-primary" size="sm" onClick={() => handleOpenJobModal(job)} style={{ borderRadius: '6px' }}><Icon type="edit" /></Button>
+                                <Button style={{ borderColor: '#d97757', color: '#d97757' }} size="sm" onClick={() => handleOpenJobModal(job)} style={{ borderRadius: '6px' }}><Icon type="edit" /></Button>
                                 <Button variant={job.isActive ? "outline-warning" : "outline-success"} size="sm" onClick={() => handleToggleJobStatus(job)} style={{ borderRadius: '6px', fontSize: '0.75rem' }}>{job.isActive ? 'Deactivate' : 'Activate'}</Button>
                                 <Button variant="outline-danger" size="sm" onClick={() => { setDeletingJob(job); setShowDeleteModal(true); }} style={{ borderRadius: '6px' }}><Icon type="trash" /></Button>
                               </div>
@@ -525,7 +525,7 @@ const AdminDashboard = () => {
                             <td style={{ padding: '12px 20px', verticalAlign: 'middle' }}>
                               <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
                                 <Button 
-                                  variant="outline-primary" 
+                                  style={{ borderColor: '#d97757', color: '#d97757' }} 
                                   size="sm" 
                                   onClick={() => handleViewApplicant(app)}
                                   style={{ borderRadius: '6px', display: 'flex', alignItems: 'center', gap: '4px' }}
