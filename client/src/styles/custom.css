@@ -182,3 +182,27 @@ body {
   }
 }
 .text-coral { color: #d97757; }
+
+/* Override Bootstrap primary color */
+.btn-primary {
+  background-color: #d97757;
+  border-color: #d97757;
+}
+.btn-primary:hover {
+  background-color: #c76a4a;
+  border-color: #c76a4a;
+}
+.btn-outline-primary {
+  color: #d97757;
+  border-color: #d97757;
+}
+.btn-outline-primary:hover {
+  background-color: #d97757;
+  color: #fff;
+}
+.text-primary {
+  color: #d97757;
+}
+.bg-primary {
+  background-color: #d97757;
+}
