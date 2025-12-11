@@ -212,7 +212,7 @@ const JobSearch = () => {
           </div>
         ) : jobs.length === 0 ? (
           <Card style={{ border: 'none', borderRadius: '16px', boxShadow: '0 2px 8px rgba(0,0,0,0.06)', textAlign: 'center', padding: '60px' }}>
-            <div style={{ fontSize: '4rem', marginBottom: '16px' }}>🔍</div>
+            <div style={{ fontSize: '4rem', marginBottom: '16px' }}></div>
             <h4 style={{ color: '#111827', marginBottom: '8px' }}>No jobs found</h4>
             <p style={{ color: '#6b7280', marginBottom: '20px' }}>
               Try adjusting your search filters or check back later.

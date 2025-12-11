@@ -82,7 +82,7 @@ const Dashboard = () => {
         {/* Header */}
         <div style={{ marginBottom: '32px' }}>
           <h1 style={{ color: '#111827', fontWeight: '700', marginBottom: '8px' }}>
-            Welcome back, {user?.firstName}! 👋
+            Welcome back, {user?.firstName}! 
           </h1>
           <p style={{ color: '#6b7280' }}>Here's what's happening with your job search.</p>
         </div>
@@ -280,10 +280,10 @@ const Dashboard = () => {
             <h5 style={{ fontWeight: '600', color: '#111827', marginBottom: '20px' }}>Quick Actions</h5>
             <Row>
               {[
-                { title: 'AI Job Match', desc: 'Find jobs matching your skills', icon: '🎯', link: '/match', color: '#d97757' },
-                { title: 'Browse Jobs', desc: 'Explore available positions', icon: '🔍', link: '/jobs', color: '#d97757' },
-                { title: 'Update Profile', desc: 'Keep your info up to date', icon: '👤', link: '/profile', color: '#10b981' },
-                { title: 'My Applications', desc: 'Track your applications', icon: '📄', link: '/applications', color: '#f59e0b' },
+                { title: 'AI Job Match', desc: 'Find jobs matching your skills', icon: '', link: '/match', color: '#d97757' },
+                { title: 'Browse Jobs', desc: 'Explore available positions', icon: '', link: '/jobs', color: '#d97757' },
+                { title: 'Update Profile', desc: 'Keep your info up to date', icon: '', link: '/profile', color: '#10b981' },
+                { title: 'My Applications', desc: 'Track your applications', icon: '', link: '/applications', color: '#f59e0b' },
               ].map((action, i) => (
                 <Col md={3} sm={6} key={i} className="mb-3">
                   <div 

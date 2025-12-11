@@ -24,8 +24,8 @@ const AIChatbot = () => {
   useEffect(() => {
     if (isOpen && messages.length === 0) {
       const greeting = user 
-        ? `Hi ${user.firstName}! 👋 I'm your NEXUS assistant. I can help you navigate the platform, give career advice, and answer questions. What would you like to know?`
-        : `Hi there! 👋 I'm the NEXUS assistant. I can help you learn about our platform and answer your questions. What would you like to know?`;
+        ? `Hi ${user.firstName}! I'm your NEXUS assistant. I can help you navigate the platform, give career advice, and answer questions. What would you like to know?`
+        : `Hi there! I'm the NEXUS assistant. I can help you learn about our platform and answer your questions. What would you like to know?`;
       
       setMessages([{ role: 'assistant', content: greeting }]);
     }

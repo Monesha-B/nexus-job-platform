@@ -251,7 +251,7 @@ const AdminDashboard = () => {
         {success && <Alert variant="success" dismissible onClose={() => setSuccess('')}>{success}</Alert>}
 
         <Tabs activeKey={activeTab} onSelect={(k) => setActiveTab(k)} className="mb-4">
-          <Tab eventKey="dashboard" title="📊 Dashboard">
+          <Tab eventKey="dashboard" title="Dashboard">
             {/* Clickable Stats Cards */}
             <Row className="mb-4 mt-4">
               {[
@@ -410,7 +410,7 @@ const AdminDashboard = () => {
             </Card>
           </Tab>
 
-          <Tab eventKey="jobs" title="💼 Manage Jobs">
+          <Tab eventKey="jobs" title="Manage Jobs">
             <div className="mt-4">
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
                 <h5 style={{ margin: 0, fontWeight: '600', color: '#111827' }}>All Jobs ({jobs.length})</h5>
@@ -473,7 +473,7 @@ const AdminDashboard = () => {
             </div>
           </Tab>
 
-          <Tab eventKey="applications" title="📄 Applications">
+          <Tab eventKey="applications" title="Applications">
             <div className="mt-4">
               <h5 style={{ margin: 0, fontWeight: '600', color: '#111827', marginBottom: '20px' }}>All Applications ({applications.length})</h5>
               
@@ -557,7 +557,7 @@ const AdminDashboard = () => {
             </div>
           </Tab>
 
-          <Tab eventKey="users" title="👥 Users">
+          <Tab eventKey="users" title="Users">
             <div className="mt-4">
               <Card style={{ border: 'none', borderRadius: '12px', boxShadow: '0 2px 8px rgba(0,0,0,0.06)' }}>
                 <Card.Header style={{ background: '#fff', borderBottom: '1px solid #e5e7eb', padding: '16px 20px' }}>
@@ -731,7 +731,7 @@ const AdminDashboard = () => {
         <Modal show={showApplicantModal} onHide={() => setShowApplicantModal(false)} size="lg">
           <Modal.Header closeButton style={{ background: '#fef7f5', borderBottom: '1px solid #fed7c5' }}>
             <Modal.Title style={{ fontWeight: '600', color: '#d97757' }}>
-              📋 Application Details
+              Application Details
             </Modal.Title>
           </Modal.Header>
           <Modal.Body style={{ padding: '0' }}>
@@ -740,7 +740,7 @@ const AdminDashboard = () => {
                 {/* Applicant Profile Section */}
                 <div style={{ padding: '24px', borderBottom: '1px solid #e5e7eb' }}>
                   <h6 style={{ color: '#6b7280', fontSize: '0.8rem', textTransform: 'uppercase', marginBottom: '16px', fontWeight: '600' }}>
-                    👤 Applicant Profile
+                    Applicant Profile
                   </h6>
                   <div style={{ display: 'flex', alignItems: 'flex-start', gap: '20px' }}>
                     <div style={{ 
@@ -794,7 +794,7 @@ const AdminDashboard = () => {
                 {/* Job Applied For */}
                 <div style={{ padding: '24px', borderBottom: '1px solid #e5e7eb', background: '#f9fafb' }}>
                   <h6 style={{ color: '#6b7280', fontSize: '0.8rem', textTransform: 'uppercase', marginBottom: '16px', fontWeight: '600' }}>
-                    💼 Job Applied For
+                    Job Applied For
                   </h6>
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                     <div>
@@ -827,7 +827,7 @@ const AdminDashboard = () => {
                 {/* Resume Section */}
                 <div style={{ padding: '24px', borderBottom: '1px solid #e5e7eb' }}>
                   <h6 style={{ color: '#6b7280', fontSize: '0.8rem', textTransform: 'uppercase', marginBottom: '16px', fontWeight: '600' }}>
-                    📄 Resume
+                    Resume
                   </h6>
                   {selectedApplication.resume || selectedApplication.applicant?.resume ? (
                     <div style={{ 
@@ -884,7 +884,7 @@ const AdminDashboard = () => {
                 {/* Cover Letter Section */}
                 <div style={{ padding: '24px' }}>
                   <h6 style={{ color: '#6b7280', fontSize: '0.8rem', textTransform: 'uppercase', marginBottom: '16px', fontWeight: '600' }}>
-                    ✉️ Cover Letter
+                    Cover Letter
                   </h6>
                   {selectedApplication.coverLetter ? (
                     <div style={{ 
